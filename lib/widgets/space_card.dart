@@ -1,10 +1,10 @@
 import 'package:cozy/theme.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import '../models/space.dart';
 
 class SpaceCard extends StatelessWidget {
-  const SpaceCard({Key? key}) : super(key: key);
+  final Space space;
+  SpaceCard(this.space);
 
   @override
   Widget build(BuildContext context) {
@@ -12,12 +12,12 @@ class SpaceCard extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(18),
-          child: Container(
+          child: SizedBox(
             width: 130,
             height: 110,
             child: Stack(
               children: [
-                Image.asset('assets/image14.png'),
+                Image.asset(space.imageURL),
                 Align(
                   alignment: Alignment.topRight,
                   child: Container(
@@ -36,10 +36,11 @@ class SpaceCard extends StatelessWidget {
                           width: 22,
                           height: 22,
                         ),
-                        Text('4/5', style: txtWhite.copyWith(
-                          fontSize: 13,
-                          color: whiteColor
-                        ),)
+                        Text(
+                          '${space.rating}/5',
+                          style: txtWhite.copyWith(
+                              fontSize: 13, color: whiteColor),
+                        )
                       ],
                     ),
                   ),
@@ -47,7 +48,36 @@ class SpaceCard extends StatelessWidget {
               ],
             ),
           ),
-        )
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              space.name,
+              style: txtBlack.copyWith(fontSize: 18),
+            ),
+            const SizedBox(
+              width: 2,
+            ),
+            Text.rich(TextSpan(
+                text: '\$${space.price}',
+                style: txtPurple.copyWith(fontSize: 16),
+                children: [
+                  TextSpan(
+                      text: " / month", style: txtGray.copyWith(fontSize: 16))
+                ])),
+            const SizedBox(
+              height: 16,
+            ),
+            Text(
+              "${space.city}, ${space.country}",
+              style: txtGray,
+            )
+          ],
+        ),
       ],
     );
   }
