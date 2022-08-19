@@ -1,10 +1,12 @@
+import 'package:cozy/models/space.dart';
 import 'package:cozy/pages/error.dart';
 import 'package:cozy/theme.dart';
 import 'package:cozy/widgets/facility_item.dart';
 import 'package:flutter/material.dart';
 
 class DetailPage extends StatelessWidget {
-  const DetailPage({Key? key}) : super(key: key);
+  final Space space;
+  const DetailPage(this.space);
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +17,8 @@ class DetailPage extends StatelessWidget {
         child: Stack(
           children: [
             // * Thumbnail image
-            Image.asset(
-              'assets/image13.png',
+            Image.network(
+              space.imageURL ?? "",
               width: MediaQuery.of(context).size.width,
               height: 350,
               fit: BoxFit.cover,
@@ -50,7 +52,7 @@ class DetailPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "data",
+                                  space.name ?? "",
                                   style: txtBlack.copyWith(
                                     fontSize: 22,
                                   ),
@@ -59,7 +61,7 @@ class DetailPage extends StatelessWidget {
                                   height: 2,
                                 ),
                                 Text.rich(TextSpan(
-                                    text: '\$52',
+                                    text: '\$${space.price}',
                                     style: txtPurple.copyWith(fontSize: 16),
                                     children: [
                                       TextSpan(
@@ -126,21 +128,21 @@ class DetailPage extends StatelessWidget {
                         padding: EdgeInsets.symmetric(horizontal: edge),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
+                          children: [
                             FacilityItem(
                               name: 'kitchen',
                               imgURL: 'assets/001-bar-counter.png',
-                              total: 1,
+                              total: space.numberOfKitchens ?? 0,
                             ),
                             FacilityItem(
                               name: 'bed',
                               imgURL: 'assets/002-double-bed.png',
-                              total: 2,
+                              total: space.numberOfBedrooms ?? 0,
                             ),
                             FacilityItem(
                               name: 'lemari',
                               imgURL: 'assets/003-cupboard.png',
-                              total: 3,
+                              total: space.numberOfCupboards ?? 0,
                             ),
                           ],
                         ),
@@ -162,55 +164,19 @@ class DetailPage extends StatelessWidget {
                       SizedBox(
                         height: 88,
                         child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            SizedBox(
-                              width: edge,
-                            ),
-                            SizedBox(
-                              width: 120,
-                              height: 88,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(18),
-                                child: Image.asset(
-                                  'assets/image17.png',
-                                  fit: BoxFit.cover,
+                            scrollDirection: Axis.horizontal,
+                            children: space.photos!.map((photo) {
+                              return Container(
+                                margin: EdgeInsets.only(left: edge),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(18),
+                                  child: Image.network(
+                                    photo,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 18,
-                            ),
-                            SizedBox(
-                              width: 120,
-                              height: 88,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(18),
-                                child: Image.asset(
-                                  'assets/image18.png',
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 18,
-                            ),
-                            SizedBox(
-                              width: 120,
-                              height: 88,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(18),
-                                child: Image.asset(
-                                  'assets/image19.png',
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: edge,
-                            ),
-                          ],
-                        ),
+                              );
+                            }).toList()),
                       ),
                       const SizedBox(
                         height: 30,
@@ -232,7 +198,7 @@ class DetailPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'alamat',
+                              '${space.address}\n${space.city}',
                               style: txtGray,
                             ),
                             InkWell(
@@ -240,7 +206,8 @@ class DetailPage extends StatelessWidget {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => ErrorPage()));
+                                        builder: (context) =>
+                                            const ErrorPage()));
                               },
                               child: Image.asset(
                                 'assets/btn-location.png',
